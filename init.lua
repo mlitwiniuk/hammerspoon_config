@@ -35,6 +35,7 @@ local mash      = {"cmd", "alt", "ctrl"}
 local mashshift = {"cmd", "alt", "shift"}
 local cmdshift = {"cmd",  "shift"}
 local altshift = {"alt", "shift"}
+local ctrlshift = {"ctrl", "shift"}
 
 --Watcherts and internal objects ==============================
 local hsConfigFileWatcher = nil
@@ -101,14 +102,14 @@ screenWatcher:start()
 defineLayout()
 
 -- Launch Applications ========================================
-	hotkey.bind(cmdshift, "T", function() application.launchOrFocus("iTerm") end)
-	hotkey.bind(cmdshift, "A", function() application.launchOrFocus("Alfred 2") end)
-	hotkey.bind(cmdshift, 'N', function() loadItermProfile() end)
+ 	hotkey.bind(mashshift, "T", function() application.launchOrFocus("iTerm") end)
+--	hotkey.bind(cmdshift, "A", function() application.launchOrFocus("Alfred 2") end)
+--	hotkey.bind(cmdshift, 'N', function() loadItermProfile() end)
 	hotkey.bind(mashshift, "R", hs.reload)
 
 -- Key bindings ===============================================
-	hotkey.bind(mashshift, 'F', function() applyLayout(work_layout) end)
-	hotkey.bind(mashshift, 'D', function() launchApp(work_layout) end)
+--	hotkey.bind(mashshift, 'F', function() applyLayout(work_layout) end)
+--	hotkey.bind(mashshift, 'D', function() launchApp(work_layout) end)
 	hotkey.bind(mashshift, 'G', function() reloadScreens() end)
 
 	hotkey.bind(mashshift, ';', saveFocus)
@@ -119,8 +120,8 @@ defineLayout()
 	hotkey.bind(mashshift, 'up', grid.maximizeWindow)
 	hotkey.bind(mashshift, 'down',  grid.pushWindowNextScreen)
 
-	hotkey.bind(altshift, 'left',  gridset(goupleft))
-	hotkey.bind(altshift, 'right', gridset(goupright))
+	hotkey.bind(ctrlshift, 'left',  gridset(goupleft))
+	hotkey.bind(ctrlshift, 'right', gridset(goupright))
 	hotkey.bind(cmdshift, 'left',  gridset(godownleft))
 	hotkey.bind(cmdshift, 'right', gridset(godownright))
 
@@ -138,6 +139,6 @@ defineLayout()
 
 	hotkey.bind(cmdshift, 'space',  function() hints.windowHints(window.focusedWindow():application():allWindows()) end)
 	hotkey.bind(mashshift, 'space',  function() hints.windowHints(nil) end)
-	hotkey.bind(mashshift, 'T', function() alert.show(os.date("%A %b %d, %Y - %I:%M%p"), 4) end)
+	hotkey.bind(mashshift, 'D', function() alert.show(os.date("%d.%m.%Y - %H:%M"), 4) end)
 
 	alert.show("Hammerspoon, at your service.", 3)
