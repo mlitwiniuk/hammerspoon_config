@@ -4,7 +4,7 @@
 
 -- Load Extensions ============================================
 screen = hs.screen
-screens = screen:allScreens()
+screens = screen.allScreens()
 nscreens = #screens
 nscreens_old = nscreens
 
@@ -29,5 +29,6 @@ function reloadScreens()
 	end
 
 end
+
 
 

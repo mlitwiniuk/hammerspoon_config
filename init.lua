@@ -14,27 +14,28 @@
 local application = hs.application
 local window      = hs.window
 local hotkey      = hs.hotkey
-local keycodes = hs.keycodes
+local keycodes    = hs.keycodes
 local fnutils     = hs.fnutils
 local alert       = hs.alert
 local grid        = hs.grid
-local tiling = hs.tiling
-local screen = hs.screen
-local hints = hs.hints
-local appfinder = hs.appfinder
-local layout = hs.layout
+local tiling      = hs.tiling
+local screen      = hs.screen
+local hints       = hs.hints
+local appfinder   = hs.appfinder
+local layout      = hs.layout
 local applescript = hs.applescript
 
 -- Load own extensions ========================================
 require "layouts"
 require "screen_detector"
 require "grid_setup"
+require "pomodoor"
 
 -- Set up hotkey combinations =================================
-local mash      = {"cmd", "alt", "ctrl"}
-local mashshift = {"cmd", "alt", "shift"}
-local cmdshift = {"cmd",  "shift"}
-local altshift = {"alt", "shift"}
+local mash      = {"cmd",  "alt", "ctrl"}
+local mashshift = {"cmd",  "alt", "shift"}
+local cmdshift  = {"cmd",  "shift"}
+local altshift  = {"alt",  "shift"}
 local ctrlshift = {"ctrl", "shift"}
 
 --Watcherts and internal objects ==============================
@@ -81,17 +82,6 @@ function reloadConfig(paths)
 	hs.reload()
 end
 
-function loadItermProfile()
-	applescript.applescript(
-		"tell application \"iTerm\" \
-			activate \
-			tell (make new terminal) \
-				launch session \"uHalley\" \
-			end tell \
-		end tell"
-		)
-end
-
 -- Automatic Operations =======================================
 -- hsConfigFileWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.", reloadConfig)
 -- hsConfigFileWatcher:start()
@@ -103,27 +93,24 @@ defineLayout()
 
 -- Launch Applications ========================================
  	hotkey.bind(mashshift, "T", function() application.launchOrFocus("iTerm") end)
---	hotkey.bind(cmdshift, "A", function() application.launchOrFocus("Alfred 2") end)
---	hotkey.bind(cmdshift, 'N', function() loadItermProfile() end)
+ 	hotkey.bind(mashshift, "P", function() application.launchOrFocus("Postbox") end)
 	hotkey.bind(mashshift, "R", hs.reload)
 
 -- Key bindings ===============================================
---	hotkey.bind(mashshift, 'F', function() applyLayout(work_layout) end)
---	hotkey.bind(mashshift, 'D', function() launchApp(work_layout) end)
 	hotkey.bind(mashshift, 'G', function() reloadScreens() end)
 
 	hotkey.bind(mashshift, ';', saveFocus)
 	hotkey.bind(mashshift, "'", focusSaved)
 
-	hotkey.bind(mashshift, 'left', gridset(goleft))
+	hotkey.bind(mashshift, 'left',  gridset(goleft))
 	hotkey.bind(mashshift, 'right', gridset(goright))
-	hotkey.bind(mashshift, 'up', grid.maximizeWindow)
+	hotkey.bind(mashshift, 'up',    grid.maximizeWindow)
 	hotkey.bind(mashshift, 'down',  grid.pushWindowNextScreen)
 
 	hotkey.bind(ctrlshift, 'left',  gridset(goupleft))
 	hotkey.bind(ctrlshift, 'right', gridset(goupright))
-	hotkey.bind(cmdshift, 'left',  gridset(godownleft))
-	hotkey.bind(cmdshift, 'right', gridset(godownright))
+	hotkey.bind(cmdshift,  'left',  gridset(godownleft))
+	hotkey.bind(cmdshift,  'right', gridset(godownright))
 
 	hotkey.bind(mashshift, 'M', gridset(gomiddle))
 
@@ -137,8 +124,13 @@ defineLayout()
 	hotkey.bind(mashshift, 'I', grid.resizeWindowThinner)
 	hotkey.bind(mashshift, 'Y', grid.resizeWindowShorter)
 
-	hotkey.bind(cmdshift, 'space',  function() hints.windowHints(window.focusedWindow():application():allWindows()) end)
-	hotkey.bind(mashshift, 'space',  function() hints.windowHints(nil) end)
+	hotkey.bind(cmdshift,  'space', function() hints.windowHints(window.focusedWindow():application():allWindows()) end)
+	hotkey.bind(mashshift, 'space', function() hints.windowHints(nil) end)
 	hotkey.bind(mashshift, 'D', function() alert.show(os.date("%d.%m.%Y - %H:%M"), 4) end)
+
+-- pomodoro key binding
+	hs.hotkey.bind(mash,   '9', function() pom_enable() end)
+	hs.hotkey.bind(mash,   '0', function() pom_disable() end)
+	hs.hotkey.bind(mashshift, '0', function() pom_reset_work() end)
 
 	alert.show("Hammerspoon, at your service.", 3)
